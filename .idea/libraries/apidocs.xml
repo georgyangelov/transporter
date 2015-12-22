@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="apidocs">
+    <CLASSES />
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/cling-distribution-2.1.0.zip!/cling-distribution-2.1.0/core/apidocs" />
+      <root url="jar://$PROJECT_DIR$/lib/cling-distribution-2.1.0.zip!/cling-distribution-2.1.0/support/apidocs" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/cling-distribution-2.1.0.zip!/cling-distribution-2.1.0/core/src/main/java" />
+      <root url="jar://$PROJECT_DIR$/lib/cling-distribution-2.1.0.zip!/cling-distribution-2.1.0/core/src/test/java" />
+      <root url="jar://$PROJECT_DIR$/lib/cling-distribution-2.1.0.zip!/cling-distribution-2.1.0/demo/android/browser/src/main/java" />
+      <root url="jar://$PROJECT_DIR$/lib/cling-distribution-2.1.0.zip!/cling-distribution-2.1.0/demo/android/light/src/main/java" />
+      <root url="jar://$PROJECT_DIR$/lib/cling-distribution-2.1.0.zip!/cling-distribution-2.1.0/support/src/main/java" />
+      <root url="jar://$PROJECT_DIR$/lib/cling-distribution-2.1.0.zip!/cling-distribution-2.1.0/support/src/test/java" />
+    </SOURCES>
+  </library>
+</component>
