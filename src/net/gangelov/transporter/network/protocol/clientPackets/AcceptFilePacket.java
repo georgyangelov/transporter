@@ -1,4 +1,4 @@
-package net.gangelov.transporter.network.protocol.serverPackets;
+package net.gangelov.transporter.network.protocol.clientPackets;
 
 import net.gangelov.transporter.network.protocol.Packet;
 
@@ -6,10 +6,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class FinalPacket extends Packet {
-    public static byte OPCODE = 4;
+public class AcceptFilePacket extends Packet {
+    public static byte OPCODE = 2;
 
-    public FinalPacket() {
+    public AcceptFilePacket() {
         super(OPCODE);
     }
 

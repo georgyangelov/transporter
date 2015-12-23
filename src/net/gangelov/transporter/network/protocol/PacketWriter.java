@@ -12,14 +12,14 @@ public class PacketWriter {
         out = new DataOutputStream(new BufferedOutputStream(outputStream));
     }
 
-    public void write(Packet packet) throws IOException {
+    public synchronized void write(Packet packet) throws IOException {
         out.writeByte(packet.opcode);
         packet.serialize(out);
 
         out.flush();
     }
 
-    public void close() throws IOException {
+    public synchronized void close() throws IOException {
         out.close();
     }
 }

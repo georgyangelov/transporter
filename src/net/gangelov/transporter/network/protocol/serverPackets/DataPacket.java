@@ -5,7 +5,7 @@ import net.gangelov.transporter.network.protocol.Packet;
 import java.io.*;
 
 public class DataPacket extends Packet {
-    public static byte OPCODE = 2;
+    public static byte OPCODE = 3;
 
     public long offset;
     public byte[] data;
