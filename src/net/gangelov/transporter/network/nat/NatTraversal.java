@@ -35,6 +35,8 @@ public class NatTraversal {
         if (testPort(APPLICATION_PORT)) {
             return APPLICATION_PORT;
         } else {
+            upnpClient.releasePort();
+
             throw new UnableToOpenPortException();
         }
     }

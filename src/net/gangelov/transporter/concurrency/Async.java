@@ -1,11 +1,6 @@
 package net.gangelov.transporter.concurrency;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.concurrent.*;
 
 public class Async {
     @FunctionalInterface
@@ -14,7 +9,12 @@ public class Async {
     }
 
     public static <T> Future<T> run(CheckedSupplier<T> function) {
-        // TODO: Shutdown executor
-        return Executors.newSingleThreadExecutor().submit(() -> function.get());
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        try {
+            return executor.submit(() -> function.get());
+        } finally {
+            executor.shutdown();
+        }
     }
 }
