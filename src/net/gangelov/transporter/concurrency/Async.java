@@ -8,13 +8,13 @@ public class Async {
         R get() throws Exception;
     }
 
-    public static <T> Future<T> run(CheckedSupplier<T> function) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static ExecutorService executor = Executors.newCachedThreadPool();
 
-        try {
-            return executor.submit(() -> function.get());
-        } finally {
-            executor.shutdown();
-        }
+    public static <T> Future<T> run(CheckedSupplier<T> function) {
+        return executor.submit(() -> function.get());
+    }
+
+    public static void run(Runnable runnable) {
+        executor.submit(runnable);
     }
 }
