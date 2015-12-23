@@ -14,6 +14,7 @@ public class Async {
     }
 
     public static <T> Future<T> run(CheckedSupplier<T> function) {
+        // TODO: Shutdown executor
         return Executors.newSingleThreadExecutor().submit(() -> function.get());
     }
 }

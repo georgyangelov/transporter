@@ -18,6 +18,10 @@ public class HTTP {
             new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8"))
         );
 
-        return reader.readLine();
+        try {
+            return reader.readLine();
+        } finally {
+            reader.close();
+        }
     }
 }
