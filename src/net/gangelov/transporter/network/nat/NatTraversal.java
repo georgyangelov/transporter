@@ -29,7 +29,7 @@ public class NatTraversal {
 
         upnpClient.tryToOpenPort(localAddress, APPLICATION_PORT, "Transporter listener port");
 
-        // Give the UPNP service a little time
+        // Give the UPnP service a little time
         Thread.currentThread().sleep(3000);
 
         if (testPort(APPLICATION_PORT)) {
