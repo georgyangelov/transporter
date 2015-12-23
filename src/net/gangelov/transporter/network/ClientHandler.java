@@ -5,7 +5,6 @@ import net.gangelov.transporter.network.protocol.ProtocolHandler;
 import net.gangelov.transporter.network.protocol.server.ClientConnectionHandler;
 import net.gangelov.transporter.network.protocol.serverPackets.HeadersPacket;
 
-import java.io.File;
 import java.io.IOException;
 
 public class ClientHandler extends ProtocolHandler {
@@ -13,11 +12,6 @@ public class ClientHandler extends ProtocolHandler {
 
     public ClientHandler(int port) throws IOException {
         this.port = port;
-    }
-
-    @Override
-    public synchronized void socketConnected(ClientConnectionHandler connectionHandler) throws IOException {
-        super.socketConnected(connectionHandler);
     }
 
     @Override

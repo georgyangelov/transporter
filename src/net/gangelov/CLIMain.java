@@ -1,6 +1,7 @@
 package net.gangelov;
 
 import net.gangelov.args.ArgumentParser;
+import net.gangelov.transporter.network.ServerHandler;
 import net.gangelov.transporter.network.nat.NatTraversal;
 
 import java.io.IOException;
@@ -48,12 +49,16 @@ public class CLIMain {
             String address = nat.getPublicAddress() + ":" + port;
 
             System.out.println("Server address is '" + address + "'");
+
+            ServerHandler server = new ServerHandler(port, file);
+            server.start();
+
             System.out.println("Waiting for clients to connect...");
         } catch (NatTraversal.UnableToOpenPortException e) {
             System.err.println(e.getMessage());
             return;
         } finally {
-            nat.releasePort();
+//            nat.releasePort();
         }
     }
 

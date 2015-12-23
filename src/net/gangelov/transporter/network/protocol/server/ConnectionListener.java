@@ -6,6 +6,7 @@ import net.gangelov.transporter.network.ServerHandler;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class ConnectionListener {
     private ConnectionListenerServer connectionServer;
@@ -43,8 +44,12 @@ public class ConnectionListener {
 
                 try {
                     client = serverSocket.accept();
+                } catch (SocketTimeoutException e) {
+                    continue;
                 } catch (IOException e) {
                     // Ignore connect errors
+                    e.printStackTrace();
+                    continue;
                 }
 
                 try {

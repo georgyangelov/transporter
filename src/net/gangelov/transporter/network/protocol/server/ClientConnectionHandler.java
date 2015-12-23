@@ -34,7 +34,11 @@ public class ClientConnectionHandler implements Runnable {
                 server.packetReceived(packet);
             } catch (SocketException e) {
                 // The socket is being closed
-                server.socketDisconnected(this);
+                try {
+                    server.socketDisconnected(this);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             } catch (IOException e) {
                 // Read error
                 e.printStackTrace();

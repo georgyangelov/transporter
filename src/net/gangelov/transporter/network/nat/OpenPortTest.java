@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class OpenPortTest {
     public static boolean test(String host, int port) throws IOException, ExecutionException, InterruptedException {
@@ -64,7 +65,12 @@ public class OpenPortTest {
         public void stop() {
             shouldRun = false;
 
-            executor.shutdown();
+            try {
+                executor.shutdown();
+                executor.awaitTermination(1500, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -87,6 +93,11 @@ public class OpenPortTest {
                         }
                     }
                 }
+            }
+
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
             }
         }
 
