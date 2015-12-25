@@ -73,9 +73,6 @@ public class ConnectionListener {
 
         private void handleClient(Socket client) throws IOException {
             ClientConnectionHandler connectionHandler = new ClientConnectionHandler(server, client);
-
-            Async.run(connectionHandler);
-
             server.socketConnected(connectionHandler);
         }
     }

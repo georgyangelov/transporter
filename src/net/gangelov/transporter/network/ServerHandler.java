@@ -1,9 +1,9 @@
 package net.gangelov.transporter.network;
 
+import net.gangelov.transporter.network.protocol.IConnectionHandler;
 import net.gangelov.transporter.network.protocol.Packet;
 import net.gangelov.transporter.network.protocol.ProtocolHandler;
 import net.gangelov.transporter.network.protocol.clientPackets.AcceptFilePacket;
-import net.gangelov.transporter.network.protocol.server.ClientConnectionHandler;
 import net.gangelov.transporter.network.protocol.server.ConnectionListener;
 import net.gangelov.transporter.network.protocol.serverPackets.HeadersPacket;
 
@@ -23,7 +23,7 @@ public class ServerHandler extends ProtocolHandler {
     }
 
     @Override
-    public synchronized void socketConnected(ClientConnectionHandler connectionHandler) throws IOException {
+    public synchronized void socketConnected(IConnectionHandler connectionHandler) throws IOException {
         super.socketConnected(connectionHandler);
 
         if (!headersSent) {
@@ -51,5 +51,7 @@ public class ServerHandler extends ProtocolHandler {
 
     public void shutdown() {
         listener.stop();
+
+        super.shutdown();
     }
 }

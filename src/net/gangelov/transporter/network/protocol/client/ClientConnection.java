@@ -1,6 +1,6 @@
-package net.gangelov.transporter.network.protocol.server;
+package net.gangelov.transporter.network.protocol.client;
 
-import net.gangelov.transporter.network.ServerHandler;
+import net.gangelov.transporter.network.ClientHandler;
 import net.gangelov.transporter.network.protocol.IConnectionHandler;
 import net.gangelov.transporter.network.protocol.Packet;
 import net.gangelov.transporter.network.protocol.PacketReader;
@@ -12,18 +12,18 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 
-public class ClientConnectionHandler implements IConnectionHandler {
-    private final ServerHandler server;
+public class ClientConnection implements IConnectionHandler {
+    private final ClientHandler client;
 
-    private final Socket client;
+    private final Socket clientSocket;
     public final PacketReader reader;
     public final PacketWriter writer;
 
-    public ClientConnectionHandler(ServerHandler server, Socket client) throws IOException {
-        this.server = server;
+    public ClientConnection(ClientHandler client, String host, int port) throws IOException {
         this.client = client;
-        this.reader = new PacketReader(new BufferedInputStream(client.getInputStream()));
-        this.writer = new PacketWriter(new BufferedOutputStream(client.getOutputStream()));
+        this.clientSocket = new Socket(host, port);
+        this.reader = new PacketReader(new BufferedInputStream(clientSocket.getInputStream()));
+        this.writer = new PacketWriter(new BufferedOutputStream(clientSocket.getOutputStream()));
     }
 
     @Override
@@ -32,11 +32,11 @@ public class ClientConnectionHandler implements IConnectionHandler {
             try {
                 Packet packet = reader.read();
 
-                server.packetReceived(packet);
+                client.packetReceived(packet);
             } catch (SocketException e) {
                 // The socket is being closed
                 try {
-                    server.socketDisconnected(this);
+                    client.socketDisconnected(this);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -64,7 +64,7 @@ public class ClientConnectionHandler implements IConnectionHandler {
         }
 
         try {
-            client.close();
+            clientSocket.close();
         } catch (IOException e) {
             // Ignore errors while closing connection
         }
