@@ -1,5 +1,7 @@
 package net.gangelov.transporter.network.protocol;
 
+import net.gangelov.ProgressTracker;
+import net.gangelov.StreamPipe;
 import net.gangelov.Streams;
 import net.gangelov.transporter.network.protocol.packets.FileRequestPacket;
 
@@ -12,11 +14,14 @@ public class ClientDataConnection implements Runnable {
     private final Socket socket;
     private final File file;
     private final FileRequestPacket request;
+    private final ProgressTracker progressTracker;
 
-    public ClientDataConnection(Socket socket, FileRequestPacket request, File file) throws IOException {
+    public ClientDataConnection(Socket socket, FileRequestPacket request,
+                                File file, ProgressTracker progressTracker) throws IOException {
         this.socket = socket;
         this.request = request;
         this.file = file;
+        this.progressTracker = progressTracker;
 
         // Send the request packet
         request.serialize(new DataOutputStream(socket.getOutputStream()));
@@ -54,6 +59,8 @@ public class ClientDataConnection implements Runnable {
 
         BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
 
-        Streams.pipe(in, out, 4096, false, request.size);
+        StreamPipe pipe = new StreamPipe(in, out, request.size, 4096, progressTracker);
+        pipe.pipe();
+//        Streams.pipe(in, out, 4096, false, request.size);
     }
 }

@@ -60,7 +60,7 @@ public class CLIMain {
 //            nat.releasePort();
         }
 
-        Server server = new Server(NatTraversal.CONTROL_PORT, NatTraversal.DATA_PORT, new File("README.md"));
+        Server server = new Server(NatTraversal.CONTROL_PORT, NatTraversal.DATA_PORT, new File(file));
         server.start();
     }
 
@@ -70,7 +70,7 @@ public class CLIMain {
         String host = addressComponents[0];
         int port = Integer.parseInt(addressComponents[1]);
 
-        ClientInstance client = new ClientInstance(host, NatTraversal.CONTROL_PORT, NatTraversal.DATA_PORT, new File("out.md"));
+        ClientInstance client = new ClientInstance(host, NatTraversal.CONTROL_PORT, NatTraversal.DATA_PORT, new File("out.mkv"));
         client.onComplete(() -> {
             System.out.println("All transfers done. Exiting...");
 
