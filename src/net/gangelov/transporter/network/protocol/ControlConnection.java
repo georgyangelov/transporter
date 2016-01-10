@@ -1,5 +1,7 @@
 package net.gangelov.transporter.network.protocol;
 
+import net.gangelov.transporter.network.protocol.packets.HeadersPacket;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -18,7 +20,7 @@ public class ControlConnection implements Runnable {
     public ControlConnection(Socket socket) throws IOException {
         this.socket = socket;
 
-        this.packetReader = new PacketReader(new BufferedInputStream(socket.getInputStream()));
+        this.packetReader = new PacketReader(socket.getInputStream());
         this.packetWriter = new PacketWriter(new BufferedOutputStream(socket.getOutputStream()));
     }
 
@@ -34,16 +36,20 @@ public class ControlConnection implements Runnable {
     public void run() {
         while (true) {
             try {
-                packetReceivedCallback.accept(packetReader.read());
+                Packet packet = packetReader.read();
+
+                packetReceivedCallback.accept(packet);
             } catch (SocketException e) {
                 // The socket is being closed
                 break;
             } catch (IOException e) {
                 // Read error
                 e.printStackTrace();
+                break;
             } catch (Exception e) {
                 // Other exception
                 e.printStackTrace();
+                break;
             }
         }
     }

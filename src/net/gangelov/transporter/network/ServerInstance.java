@@ -53,5 +53,6 @@ public class ServerInstance {
 
     private void handlePacketReceived(Packet packet) {
         // TODO: Implement
+        System.out.println("[ServerInstance] Packet received: " + packet.toString());
     }
 }

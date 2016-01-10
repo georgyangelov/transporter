@@ -1,8 +1,11 @@
 package net.gangelov;
 
 import net.gangelov.args.ArgumentParser;
+import net.gangelov.transporter.network.ClientInstance;
+import net.gangelov.transporter.network.Server;
 import net.gangelov.transporter.network.nat.NatTraversal;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.LogManager;
@@ -41,11 +44,11 @@ public class CLIMain {
         System.out.println("Public address: " + nat.getPublicAddress());
 
         try {
-            int port = nat.openPort();
+            nat.openPort();
 
-            System.out.println("Opened port for file transfer: " + port);
+            System.out.println("Opened port for file transfer: " + NatTraversal.CONTROL_PORT);
 
-            String address = nat.getPublicAddress() + ":" + port;
+            String address = nat.getPublicAddress() + ":" + NatTraversal.CONTROL_PORT;
 
             System.out.println("Server address is '" + address + "'");
             System.out.println("Waiting for clients to connect...");
@@ -53,15 +56,21 @@ public class CLIMain {
             System.err.println(e.getMessage());
             return;
         } finally {
-            nat.releasePort();
+//            nat.releasePort();
         }
+
+        Server server = new Server(NatTraversal.CONTROL_PORT, NatTraversal.DATA_PORT, new File("README.md"));
+        server.start();
     }
 
-    private static void receiveFile(String address) {
+    private static void receiveFile(String address) throws IOException {
         String[] addressComponents = address.split(":");
 
         String host = addressComponents[0];
         int port = Integer.parseInt(addressComponents[1]);
+
+        ClientInstance client = new ClientInstance(host, NatTraversal.CONTROL_PORT, NatTraversal.DATA_PORT, new File("out.md"));
+        client.start();
 
         System.out.println("Receiving file from " + host + ":" + port);
     }

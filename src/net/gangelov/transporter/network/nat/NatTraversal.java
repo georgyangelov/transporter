@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public class NatTraversal {
-    private static int APPLICATION_PORT = 4143;
+    public static int CONTROL_PORT = 4143,
+                      DATA_PORT = 4144;
 
     private String publicAddress = null,
                    localAddress = null;
@@ -24,21 +25,20 @@ public class NatTraversal {
         return localAddress;
     }
 
-    public int openPort() throws UnableToOpenPortException, ExecutionException, InterruptedException {
+    public void openPort() throws UnableToOpenPortException, ExecutionException, InterruptedException {
         upnpClient = new UPNPClient();
 
-        upnpClient.tryToOpenPort(localAddress, APPLICATION_PORT, "Transporter listener port");
+        upnpClient.tryToOpenPort(localAddress, CONTROL_PORT, "Transporter control port");
+        upnpClient.tryToOpenPort(localAddress, DATA_PORT, "Transporter data port");
 
         // Give the UPnP service a little time
         Thread.currentThread().sleep(3000);
 
-        if (testPort(APPLICATION_PORT)) {
-            return APPLICATION_PORT;
-        } else {
-            upnpClient.releasePort();
-
-            throw new UnableToOpenPortException();
-        }
+//        if (!testPort(CONTROL_PORT)) {
+//            upnpClient.releasePort();
+//
+//            throw new UnableToOpenPortException();
+//        }
     }
 
     public void releasePort() {

@@ -60,10 +60,10 @@ public class ConnectionListener {
                 } catch (Exception e) {
                     // Do not allow exceptions to bring down the whole connectionServer
                     e.printStackTrace();
-                } finally {
+
                     try {
                         client.close();
-                    } catch (IOException e) {
+                    } catch (IOException err) {
                         // Ignore close errors
                     }
                 }

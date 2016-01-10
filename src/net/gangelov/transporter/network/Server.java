@@ -41,7 +41,7 @@ public class Server {
     }
 
     public void start() {
-        controlListener.stop();
+        controlListener.start();
         dataListener.start();
     }
 
@@ -60,6 +60,6 @@ public class Server {
     private void onNewDataConnection(Socket socket) throws IOException {
         ServerDataConnection dataConnection = new ServerDataConnection(socket, file);
 
-        serverInstances.get(dataConnection.requestPacket).onNewDataConnection(dataConnection);
+        serverInstances.get(dataConnection.requestPacket.connectionId).onNewDataConnection(dataConnection);
     }
 }

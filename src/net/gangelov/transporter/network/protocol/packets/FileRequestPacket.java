@@ -37,4 +37,11 @@ public class FileRequestPacket extends Packet {
         offset = in.readLong();
         size = in.readLong();
     }
+
+    @Override
+    public String toString() {
+        return "FileRequestPacket(connectionId: " + connectionId + ", " +
+            "offset: " + offset + ", " +
+            "size: " + size + ")";
+    }
 }

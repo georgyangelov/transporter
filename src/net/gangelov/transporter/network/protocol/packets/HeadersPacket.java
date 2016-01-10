@@ -38,4 +38,11 @@ public class HeadersPacket extends Packet {
         fileName = in.readUTF();
         fileSize = in.readLong();
     }
+
+    @Override
+    public String toString() {
+        return "HeadersPacket(connectionId: " + connectionId + ", " +
+            "fileName: " + fileName + ", " +
+            "fileSize: " + fileSize + ")";
+    }
 }

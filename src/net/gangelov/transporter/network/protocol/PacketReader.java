@@ -9,7 +9,7 @@ public class PacketReader {
     private final DataInputStream in;
 
     public PacketReader(InputStream inputStream) {
-        in = new DataInputStream(new BufferedInputStream(inputStream));
+        in = new DataInputStream(inputStream);
     }
 
     public synchronized Packet read() throws IOException, InstantiationException, IllegalAccessException {

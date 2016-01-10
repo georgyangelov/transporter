@@ -1,10 +1,9 @@
 package net.gangelov.transporter.network.protocol;
 
+import net.gangelov.Streams;
 import net.gangelov.transporter.network.protocol.packets.FileRequestPacket;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -20,6 +19,7 @@ public class ServerDataConnection implements Runnable {
 
         // Read the request packet
         requestPacket.deserialize(new DataInputStream(socket.getInputStream()));
+        System.out.println("[ServerDataConnection] Packet received: " + requestPacket.toString());
     }
 
     @Override
@@ -42,6 +42,11 @@ public class ServerDataConnection implements Runnable {
     }
 
     public void sendFile() throws IOException {
-        // TODO: Begin sending file
+        FileInputStream in = new FileInputStream(file);
+        in.skip(requestPacket.offset);
+
+        BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
+
+        Streams.pipe(in, out, 4096, false, requestPacket.size);
     }
 }
