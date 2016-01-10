@@ -3,6 +3,7 @@ package net.gangelov.transporter.network;
 import net.gangelov.transporter.concurrency.Async;
 import net.gangelov.transporter.network.protocol.Packet;
 import net.gangelov.transporter.network.protocol.ControlConnection;
+import net.gangelov.transporter.network.protocol.packets.ClosePacket;
 import net.gangelov.transporter.network.protocol.packets.HeadersPacket;
 import net.gangelov.transporter.network.protocol.ServerDataConnection;
 
@@ -33,8 +34,6 @@ public class ServerInstance {
     }
 
     public void stop() {
-        // TODO: Send a disconnect packet and wait for the client to close the connections
-
         dataConnections.forEach(ServerDataConnection::disconnect);
 
         controlConnection.disconnect();
@@ -52,7 +51,12 @@ public class ServerInstance {
     }
 
     private void handlePacketReceived(Packet packet) {
-        // TODO: Implement
         System.out.println("[ServerInstance] Packet received: " + packet.toString());
+
+        if (packet.opcode == ClosePacket.OPCODE) {
+            stop();
+        } else {
+            System.err.println("Unknown packet received " + packet.toString());
+        }
     }
 }

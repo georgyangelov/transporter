@@ -1,14 +1,17 @@
 package net.gangelov.transporter.network;
 
 import net.gangelov.transporter.concurrency.Async;
+import net.gangelov.transporter.concurrency.Callback;
 import net.gangelov.transporter.network.protocol.ClientDataConnection;
 import net.gangelov.transporter.network.protocol.ControlConnection;
 import net.gangelov.transporter.network.protocol.Packet;
+import net.gangelov.transporter.network.protocol.packets.ClosePacket;
 import net.gangelov.transporter.network.protocol.packets.FileRequestPacket;
 import net.gangelov.transporter.network.protocol.packets.HeadersPacket;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.RandomAccessFile;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -24,6 +27,8 @@ public class ClientInstance {
 
     private HeadersPacket headers;
 
+    private Callback onComplete = () -> {};
+
     public ClientInstance(String host, int controlPort, int dataPort, File file) throws IOException {
         this.host = host;
         this.file = file;
@@ -35,22 +40,26 @@ public class ClientInstance {
         controlConnection.onPacketReceived((packet) -> {
             try {
                 onPacketReceived(packet);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void onComplete(Callback onComplete) {
+        this.onComplete = onComplete;
     }
 
     public void start() {
         Async.run(controlConnection);
     }
 
-    private void stop() {
+    public void stop() {
         dataConnections.forEach(ClientDataConnection::disconnect);
         controlConnection.disconnect();
     }
 
-    private void onPacketReceived(Packet packet) throws IOException {
+    private void onPacketReceived(Packet packet) throws Exception {
         System.out.println("[ClientInstance] Packet received: " + packet.toString());
 
         if (packet.opcode == HeadersPacket.OPCODE) {
@@ -69,7 +78,7 @@ public class ClientInstance {
         randomAccessFile.close();
     }
 
-    private void openDataConnections() throws IOException {
+    private void openDataConnections() throws IOException, InterruptedException {
         // TODO: Open multiple data connections
         Socket socket = new Socket(host, dataPort);
         FileRequestPacket request = new FileRequestPacket(headers.connectionId, 0, headers.fileSize);
@@ -77,6 +86,9 @@ public class ClientInstance {
 
         dataConnections.add(dataConnection);
 
-        Async.run(dataConnection);
+        Async.runAndWaitFor(dataConnections, () -> {
+            stop();
+            onComplete.execute();
+        });
     }
 }

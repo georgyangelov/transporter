@@ -1,9 +1,11 @@
 package net.gangelov.transporter.network.protocol;
 
+import net.gangelov.transporter.network.protocol.packets.ClosePacket;
 import net.gangelov.transporter.network.protocol.packets.HeadersPacket;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
@@ -16,6 +18,8 @@ public class ControlConnection implements Runnable {
 
     protected PacketReader packetReader;
     protected PacketWriter packetWriter;
+
+    private boolean disconnecting = false;
 
     public ControlConnection(Socket socket) throws IOException {
         this.socket = socket;
@@ -34,27 +38,34 @@ public class ControlConnection implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (!disconnecting) {
             try {
                 Packet packet = packetReader.read();
 
                 packetReceivedCallback.accept(packet);
             } catch (SocketException e) {
-                // The socket is being closed
-                break;
-            } catch (IOException e) {
-                // Read error
-                e.printStackTrace();
+                // The socket is being closed by us
                 break;
             } catch (Exception e) {
-                // Other exception
-                e.printStackTrace();
-                break;
+                if (!disconnecting) {
+                    // Read error
+                    e.printStackTrace();
+                    break;
+                }
             }
         }
     }
 
     public void disconnect() {
+        disconnecting = true;
+
+        try {
+            sendPacket(new ClosePacket());
+        } catch (IOException e) {
+            // Cannot send close packet. Whatever...
+            e.printStackTrace();
+        }
+
         try {
             socket.close();
         } catch (IOException e) {

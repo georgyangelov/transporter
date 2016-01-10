@@ -1,5 +1,6 @@
 package net.gangelov.transporter.network.protocol;
 
+import net.gangelov.transporter.network.protocol.packets.ClosePacket;
 import net.gangelov.transporter.network.protocol.packets.FileRequestPacket;
 import net.gangelov.transporter.network.protocol.packets.HeadersPacket;
 
@@ -19,6 +20,7 @@ public abstract class Packet {
     static {
         Packet.registerPacketClass(HeadersPacket.OPCODE, HeadersPacket.class);
         Packet.registerPacketClass(FileRequestPacket.OPCODE, FileRequestPacket.class);
+        Packet.registerPacketClass(ClosePacket.OPCODE, ClosePacket.class);
     }
 
     public static Packet newForOpcode(byte opcode) throws IllegalArgumentException, IllegalAccessException, InstantiationException {

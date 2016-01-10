@@ -1,6 +1,7 @@
 package net.gangelov;
 
 import net.gangelov.args.ArgumentParser;
+import net.gangelov.transporter.concurrency.Async;
 import net.gangelov.transporter.network.ClientInstance;
 import net.gangelov.transporter.network.Server;
 import net.gangelov.transporter.network.nat.NatTraversal;
@@ -70,6 +71,11 @@ public class CLIMain {
         int port = Integer.parseInt(addressComponents[1]);
 
         ClientInstance client = new ClientInstance(host, NatTraversal.CONTROL_PORT, NatTraversal.DATA_PORT, new File("out.md"));
+        client.onComplete(() -> {
+            System.out.println("All transfers done. Exiting...");
+
+            Async.shutdown();
+        });
         client.start();
 
         System.out.println("Receiving file from " + host + ":" + port);
