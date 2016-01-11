@@ -45,6 +45,11 @@ public class Server {
         dataListener.start();
     }
 
+    public void stop() {
+        controlListener.stop();
+        dataListener.stop();
+    }
+
     private synchronized void onNewControlConnection(Socket socket) throws IOException {
         // NOTE: This may overflow, but is unlikely
         int serverInstanceId = connectionIdCounter++;

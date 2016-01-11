@@ -15,6 +15,7 @@ import java.io.RandomAccessFile;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ClientInstance {
     private final ControlConnection controlConnection;
@@ -30,6 +31,7 @@ public class ClientInstance {
     private boolean shouldLogProgress = true;
 
     private Callback onComplete = () -> {};
+    private Consumer<ProgressTracker> onProgress = (p) -> {};
 
     public ClientInstance(String host, int controlPort, int dataPort, File file) throws IOException {
         this.host = host;
@@ -51,6 +53,7 @@ public class ClientInstance {
     public void onComplete(Callback onComplete) {
         this.onComplete = onComplete;
     }
+    public void onProgress(Consumer<ProgressTracker> onProgress) { this.onProgress = onProgress; }
 
     public void start() {
         Async.run(controlConnection);
@@ -105,13 +108,14 @@ public class ClientInstance {
         Async.run(() -> {
             try {
                 while (shouldLogProgress) {
-                    Thread.currentThread().sleep(1000);
+                    Thread.currentThread().sleep(100);
 
                     int progressPercentage = Math.round(progressTracker.getProgress() * 100);
 
                     System.out.println("Progress: " + progressPercentage + "%, " +
                                        "Speed: " + progressTracker.getSpeedAsString());
 
+                    onProgress.accept(progressTracker);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

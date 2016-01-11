@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 public class NatTraversal {
     public static int CONTROL_PORT = 4143,
-                      DATA_PORT = 4144;
+                      DATA_PORT = 4145;
 
     private String publicAddress = null,
                    localAddress = null;
@@ -28,8 +28,7 @@ public class NatTraversal {
     public void openPort() throws UnableToOpenPortException, ExecutionException, InterruptedException {
         upnpClient = new UPNPClient();
 
-        upnpClient.tryToOpenPort(localAddress, CONTROL_PORT, "Transporter control port");
-        upnpClient.tryToOpenPort(localAddress, DATA_PORT, "Transporter data port");
+        upnpClient.tryToOpenPort(localAddress, CONTROL_PORT, DATA_PORT, "Transporter control port", "Transporter data port");
 
         // Give the UPnP service a little time
         Thread.currentThread().sleep(3000);
